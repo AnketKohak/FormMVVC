@@ -27,7 +27,7 @@ struct FormData {
         if email.isEmpty {
             messages.append("Email is required")
         } else if !isValidEmail(email) {
-            messages.append("Please enter a valid email address.")
+            messages.append("Enter a valid Email address.")
         }
         
         // Contact number validation
