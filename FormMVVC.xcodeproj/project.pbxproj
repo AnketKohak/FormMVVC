@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		544961082CE6735900BED36C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 544961072CE6735900BED36C /* FirebaseAuth */; };
 		5449610A2CE6735900BED36C /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 544961092CE6735900BED36C /* FirebaseFirestore */; };
+		54A860182CEB7F2F002C2334 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 54A860172CEB7F2F002C2334 /* FirebaseStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,7 @@
 			files = (
 				544961082CE6735900BED36C /* FirebaseAuth in Frameworks */,
 				5449610A2CE6735900BED36C /* FirebaseFirestore in Frameworks */,
+				54A860182CEB7F2F002C2334 /* FirebaseStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,6 +55,7 @@
 			isa = PBXGroup;
 			children = (
 				544960CB2CE6380900BED36C /* FormMVVC */,
+				54A860162CEB7F2F002C2334 /* Frameworks */,
 				544960CA2CE6380900BED36C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -63,6 +66,13 @@
 				544960C92CE6380900BED36C /* FormMVVC.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		54A860162CEB7F2F002C2334 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -87,6 +97,7 @@
 			packageProductDependencies = (
 				544961072CE6735900BED36C /* FirebaseAuth */,
 				544961092CE6735900BED36C /* FirebaseFirestore */,
+				54A860172CEB7F2F002C2334 /* FirebaseStorage */,
 			);
 			productName = FormMVVC;
 			productReference = 544960C92CE6380900BED36C /* FormMVVC.app */;
@@ -375,6 +386,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 544961062CE6735900BED36C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseFirestore;
+		};
+		54A860172CEB7F2F002C2334 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 544961062CE6735900BED36C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
