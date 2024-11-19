@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject private var authViewModel = AuthViewModel()
     @ObservedObject var viewModel = FormViewModel() // ViewModel instance
     
     var body: some View {
@@ -60,7 +61,18 @@ struct ContentView: View {
                 }
                 
                 // Submit Button
-                Button(action: viewModel.submitForm) {
+                Button {
+                    Task{
+                        await authViewModel.createUser(
+                            email: viewModel.formData.email,
+                            name: viewModel.formData.name,
+                            password: viewModel.formData.password,
+                            contactNumber: viewModel.formData.contactNumber,
+                            dateOfBirth: viewModel.formData.dateOfBirth
+                        )
+                    }
+                    
+                }label: {
                     Text(viewModel.isLoading ? "Submitting..." : "Submit")
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding()

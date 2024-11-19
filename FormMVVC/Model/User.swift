@@ -10,5 +10,7 @@ import Foundation
 struct User:Codable{
     let uid:String
     let email:String
-    let fullName:String
+    let name:String
+    let contactNumber:String
+    let dateOfBirth:Date
 }

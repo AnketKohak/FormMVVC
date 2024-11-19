@@ -14,6 +14,8 @@ struct FormData {
     var dateOfBirth: Date = Date()
     var password: String = ""
     
+    
+    
     // Validate form fields
     func validate() -> [String] {
         var messages: [String] = []

@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseAuth
 import FirebaseFirestore
-
+@MainActor
 final class AuthViewModel: ObservableObject {
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: User?
@@ -19,23 +19,24 @@ final class AuthViewModel: ObservableObject {
     init(){
         
     }
-    func createUser(email: String, fullName: String,password: String) async {
+    func createUser(email: String, name: String,password: String,contactNumber: String,dateOfBirth: Date) async {
         do{
             let authResult = try await auth.createUser(withEmail: email, password: password)
-            await storeUserFirestore(uid: authResult.user.uid, email: email,fullName: fullName)
+            await storeUserFirestore(uid: authResult.user.uid, email: email,name: name,contactNumber: contactNumber,dateOfBirth: dateOfBirth)
         }
         catch{
             isEorror = true
         }
     }
     
-    func storeUserFirestore(uid: String, email: String, fullName: String) async{
-        let user = User(uid: uid, email: email, fullName: fullName)
+    func storeUserFirestore(uid: String, email: String, name: String,contactNumber: String,dateOfBirth: Date) async{
+        let user = User(uid: uid, email: email, name:name, contactNumber: contactNumber, dateOfBirth: dateOfBirth)
         do{
             try fireStore.collection("users").document(uid).setData(from:user)
         }
         catch{
-            
+            isEorror = true
+
         }
     }
 }
