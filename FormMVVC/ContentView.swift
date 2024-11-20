@@ -3,13 +3,19 @@
 //  FormMVVC
 //
 //  Created by anket kohak on 14/11/24.
-//Anket
+//
 
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var authViewModel = AuthViewModel()
-    @ObservedObject var viewModel = FormViewModel() // ViewModel instance
+    @StateObject private var viewModel = AuthFormViewModel() // Combined ViewModel instance
+    @State private var confirmPassword: String = "" // Confirm Password field
+    
+    var isValid: Bool {
+        !viewModel.formData.password.isEmpty &&
+        !confirmPassword.isEmpty &&
+        viewModel.formData.password == confirmPassword
+    }
     
     var body: some View {
         NavigationView {
@@ -20,6 +26,9 @@ struct ContentView: View {
                         TextField("Name", text: $viewModel.formData.name)
                             .textContentType(.name)
                             .autocapitalization(.words)
+                            .onChange(of: viewModel.formData.name) { _ in
+                                removeError(for: "Name")
+                            }
                         
                         ErrorText(message: viewModel.errorMessages.first(where: { $0.contains("Name") }) ?? "")
                     }
@@ -30,6 +39,9 @@ struct ContentView: View {
                             .keyboardType(.emailAddress)
                             .autocapitalization(.none)
                             .textContentType(.emailAddress)
+                            .onChange(of: viewModel.formData.email) { _ in
+                                removeError(for: "Email")
+                            }
                         
                         ErrorText(message: viewModel.errorMessages.first(where: { $0.contains("Email") }) ?? "")
                     }
@@ -39,13 +51,18 @@ struct ContentView: View {
                         TextField("Contact Number", text: $viewModel.formData.contactNumber)
                             .keyboardType(.phonePad)
                             .textContentType(.telephoneNumber)
+                            .onChange(of: viewModel.formData.contactNumber) { _ in
+                                removeError(for: "number")
+                            }
                         
                         ErrorText(message: viewModel.errorMessages.first(where: { $0.contains("number") }) ?? "")
                     }
                     
                     // Date of Birth
                     DatePicker("Date of Birth", selection: $viewModel.formData.dateOfBirth, displayedComponents: .date)
-                        .onChange(of: viewModel.formData.dateOfBirth) { _ in }
+                        .onChange(of: viewModel.formData.dateOfBirth) { _ in
+                            removeError(for: "years")
+                        }
                     
                     ErrorText(message: viewModel.errorMessages.first(where: { $0.contains("years") }) ?? "")
                 }
@@ -55,24 +72,49 @@ struct ContentView: View {
                     HStack {
                         SecureField("Password", text: $viewModel.formData.password)
                             .textContentType(.password)
+                            .onChange(of: viewModel.formData.password) { _ in
+                                removeError(for: "Password")
+                            }
                         
                         ErrorText(message: viewModel.errorMessages.first(where: { $0.contains("Password") }) ?? "")
+                    }
+                    
+                    // Confirm Password
+                    ZStack(alignment: .trailing) {
+                        InputView(placeholder: "Confirm Your Password", isSecureField: true, text: $confirmPassword)
+                            .onChange(of: confirmPassword) { _ in
+                                // Remove alert message if passwords are now matching
+                                if isValid {
+                                    viewModel.alertMessage = ""
+                                    viewModel.isError = false
+                                }
+                            }
+                        
+                        Spacer()
+                        
+                        if !viewModel.formData.password.isEmpty && !confirmPassword.isEmpty {
+                            Image(systemName: "\(isValid ? "checkmark" : "xmark").circle.fill")
+                                .imageScale(.large)
+                                .foregroundStyle(isValid ? .green : .red)
+                        }
                     }
                 }
                 
                 // Submit Button
                 Button {
-                    Task{
-                        await authViewModel.createUser(
-                            email: viewModel.formData.email,
-                            name: viewModel.formData.name,
-                            password: viewModel.formData.password,
-                            contactNumber: viewModel.formData.contactNumber,
-                            dateOfBirth: viewModel.formData.dateOfBirth
-                        )
+                    viewModel.submitForm() // Validate form first
+                    if viewModel.errorMessages.isEmpty {
+                        Task {
+                            await viewModel.createUser(
+                                email: viewModel.formData.email,
+                                name: viewModel.formData.name,
+                                password: viewModel.formData.password,
+                                contactNumber: viewModel.formData.contactNumber,
+                                dateOfBirth: viewModel.formData.dateOfBirth
+                            )
+                        }
                     }
-                    
-                }label: {
+                } label: {
                     Text(viewModel.isLoading ? "Submitting..." : "Submit")
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding()
@@ -85,12 +127,17 @@ struct ContentView: View {
                 // Alert
                 if !viewModel.alertMessage.isEmpty {
                     Text(viewModel.alertMessage)
-                        .foregroundColor(.red)
+                        .foregroundColor(viewModel.isError ? .red : .green)
                         .padding()
                 }
             }
             .navigationTitle("User Registration")
         }
+    }
+    
+    // Remove specific error message from errorMessages array
+    private func removeError(for field: String) {
+        viewModel.errorMessages.removeAll { $0.contains(field) }
     }
 }
 
@@ -103,6 +150,22 @@ struct ErrorText: View {
             .foregroundColor(.red)
             .frame(height: 15)
             .opacity(message.isEmpty ? 0 : 1)
+    }
+}
+
+// MARK: InputView for Secure Fields
+struct InputView: View {
+    let placeholder: String
+    let isSecureField: Bool
+    @Binding var text: String
+    
+    var body: some View {
+        if isSecureField {
+            SecureField(placeholder, text: $text)
+                .textContentType(.password)
+        } else {
+            TextField(placeholder, text: $text)
+        }
     }
 }
 
