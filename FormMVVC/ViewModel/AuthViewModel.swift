@@ -10,7 +10,7 @@ import FirebaseAuth
 import FirebaseFirestore
 @MainActor
 final class AuthFormViewModel: ObservableObject {
-    // Authentication properties
+   
     @Published var userSession: FirebaseAuth.User?
     @Published var currentUser: User?
     @Published var isError: Bool = false
@@ -18,10 +18,10 @@ final class AuthFormViewModel: ObservableObject {
     private let fireStore = Firestore.firestore()
     
     // Form properties
-    @Published var formData = FormData() // Holds the form data
-    @Published var errorMessages: [String] = [] // To display validation errors
-    @Published var alertMessage: String = "" // To display alert messages
-    @Published var isLoading: Bool = false // Show loading state
+    @Published var formData = FormData()
+    @Published var errorMessages: [String] = []
+    @Published var alertMessage: String = ""
+    @Published var isLoading: Bool = false
     
     init() {}
     
@@ -32,7 +32,7 @@ final class AuthFormViewModel: ObservableObject {
             let authResult = try await auth.createUser(withEmail: email, password: password)
             await storeUserFirestore(uid: authResult.user.uid, email: email, name: name, contactNumber: contactNumber, dateOfBirth: dateOfBirth)
             
-            // If no errors, show success
+          
             if !isError {
             }
         } catch {
@@ -55,7 +55,7 @@ final class AuthFormViewModel: ObservableObject {
     
     // Submit Form Data to API
     func submitForm() {
-        // Validate the form
+        
         errorMessages = formData.validate()
         
         if errorMessages.isEmpty {
@@ -68,7 +68,7 @@ final class AuthFormViewModel: ObservableObject {
                     dateOfBirth: formData.dateOfBirth
                 )
                 
-                // Only show success if no error occurred
+               
                 if !isError {
                     alertMessage = "Form submitted successfully!"
                 }

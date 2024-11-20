@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var viewModel = AuthFormViewModel() // Combined ViewModel instance
-    @State private var confirmPassword: String = "" // Confirm Password field
+    @StateObject private var viewModel = AuthFormViewModel()
+    @State private var confirmPassword: String = ""
     
     var isValid: Bool {
         !viewModel.formData.password.isEmpty &&
@@ -135,7 +135,7 @@ struct ContentView: View {
         }
     }
     
-    // Remove specific error message from errorMessages array
+  
     private func removeError(for field: String) {
         viewModel.errorMessages.removeAll { $0.contains(field) }
     }

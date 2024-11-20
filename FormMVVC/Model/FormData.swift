@@ -6,7 +6,6 @@
 //
 
 import Foundation
-// Form data model
 struct FormData {
     var name: String = ""
     var email: String = ""
